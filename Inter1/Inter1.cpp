@@ -68,7 +68,6 @@ void PrintHexAsBytes3(uint32_t i)
     putchar('\n');
 }
 
-
 #pragma optimize("", off)
 
 int main()
@@ -76,6 +75,5 @@ int main()
     PrintHexAsBytes2(0x6278ABCE);
     PrintHexAsBytes1(0xDEADBEEF);
     PrintHexAsBytes3(0x62A19CDB);
-    return 0;
 }
 
