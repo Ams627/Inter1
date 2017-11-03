@@ -1,6 +1,34 @@
 #include "stdafx.h"
 #include <cstdint>
+#include <cmath>
+#include <iostream>
 #include <stack>
+
+class Singleton
+{
+    // Question - why is this singleton thread safe? (it definitely is)
+public:
+    static Singleton& GetInstance()
+    {
+        static Singleton s;
+        return s;
+    }
+};
+
+class X
+{
+public:
+    X() = default;
+    X(X& a) = delete;
+};
+
+void Func()
+{
+    X a;
+
+    // Question - why will the code below not compile?
+    X b = a; 
+}
 
 union U
 {
@@ -68,12 +96,52 @@ void PrintHexAsBytes3(uint32_t i)
     putchar('\n');
 }
 
+void PrintHexAsBytes4(int i, int iteration = 8)
+{
+    if (--iteration != 0)
+    {
+        PrintHexAsBytes4(i >> 4, iteration);
+    }
+    auto b = i & 0xF;
+    putchar(b < 10 ? b + '0' : b + 'A' - 10);
+}
+
+template <typename I> void PrintHexAsBytes5(I i, int iteration = 2 * sizeof I)
+{
+    if (--iteration != 0)
+    {
+        PrintHexAsBytes5(i >> 4, iteration);
+    }
+    unsigned char b = i & 0xF;
+    putchar(b < 10 ? b + '0' : b + 'A' - 10);
+}
+
 #pragma optimize("", off)
+
+constexpr int Log2(int x)
+{
+    int count = 0;
+    while (x >>= 1)
+    {
+        count++;
+    }
+    return count;
+}
 
 int main()
 {
-    PrintHexAsBytes2(0x6278ABCE);
+    signed char x = -3;
+    x >>= 1;
+    int a[Log2(10695)];
+    std::cout << sizeof(a) << std::endl;
     PrintHexAsBytes1(0xDEADBEEF);
+    PrintHexAsBytes2(0x6278ABCE);
     PrintHexAsBytes3(0x62A19CDB);
+    PrintHexAsBytes4(0xDeadBeef);
+    PrintHexAsBytes5(0xDeadBeef);
+    std::cout << std::endl;
+    PrintHexAsBytes5(0xDeadBeefEACE1234LL);
+
+    std::cout << "\n";
 }
 
